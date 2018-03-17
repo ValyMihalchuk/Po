@@ -20,5 +20,5 @@ dispatcher.add_handler(start_handler)
 updater.start_webhook(listen="0.0.0.0",
                       port=PORT,
                       url_path=TOKEN)
-updater.bot.set_webhook("https://poison-.herokuapp.com/" + TOKEN)
+updater.bot.set_webhook("https://warm-tor-12956.herokuapp.com/" + TOKEN)
 updater.idle()
