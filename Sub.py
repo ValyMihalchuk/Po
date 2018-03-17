@@ -1,8 +1,5 @@
-# -*- coding: utf-8 -*-
-
-
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 import logging
 import os
 
@@ -20,39 +17,44 @@ def start(bot, update):
                      'the sub of the day, cause I can print it (/sub)'.format(greeting))
 
 
-def help(bot, update):
-    bot.send_message(chat_id=update.message.chat_id, text='Oh, I see, you need some help in using me.\n'
-                                                          'Brilliant! Here are the things I can:\n{}'.format(
-        ''.join([line for line in open('CommandForBot.txt', 'r', encoding='utf-8')])))
+def help_bot(bot, update):
+    bot.send_message(chat_id=update.message.chat_id, 
+                     text='Oh, I see, you need some help in using me.\n'
+                          'Brilliant! Here are the things I can:\n{}'.
+                     format(''.join([line for line in open('CommandForBot.txt', 'r', encoding='utf-8')])))
 
 
-def sub(bot, update):
+def subway(bot, update):
     subs = [sub[:-1:] for sub in open('WeekOfSubs.txt', 'r', encoding='utf-8')]
-    bot.send_message(chat_id=update.message.chat_id, text='And the sub of the day for today is:\n' + subs[date.weekday(date.today())])
+    bot.send_message(chat_id=update.message.chat_id,
+                     text='And the sub of the day for today is:\n' + subs[date.weekday(date.today())])
 
 
 def time(bot, update):
-    bot.send_message(chat_id=update.message.chat_id, text=datetime.today().strftime('%H:%M\n%d %h %Y'))
+    bot.send_message(chat_id=update.message.chat_id, 
+                     text=(datetime.today() + timedelta(hours=3)).strftime('%H:%M\n%d %h %Y'))
 
 
 def unknown(bot, update):
     greeting = update.message.chat.username if update.message.chat.type in {'private'} else 'Babes'
-    bot.send_message(chat_id=update.message.chat_id, text='{}, it`s cool, you`re writing me, but I '
+    bot.send_message(chat_id=update.message.chat_id,
+                     text='{}, it`s cool, you`re writing me, but I '
                      'can`t do the thing you want me to do :C\nUse /help for more details'.format(greeting))
 
 
 def text(bot, update):
-    bot.send_message(chat_id=update.message.chat_id, text='Oops! I`m not programmed to "touch" your text, sorry about it!')
+    bot.send_message(chat_id=update.message.chat_id,
+                     text='Oops! I`m not programmed to "touch" your text, sorry about it!')
 
 
 start_handler = CommandHandler('start', start)
 dispatcher.add_handler(start_handler)
 
-help_handler = CommandHandler('help', help)
+help_handler = CommandHandler('help', help_bot)
 dispatcher.add_handler(help_handler)
 
-sub_handler = CommandHandler('sub', sub)
-dispatcher.add_handler(sub_handler)
+subway_handler = CommandHandler('sub', subway)
+dispatcher.add_handler(subway_handler)
 
 time_handler = CommandHandler('time', time)
 dispatcher.add_handler(time_handler)
