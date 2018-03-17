@@ -3,7 +3,7 @@ from datetime import date, datetime, timedelta
 import logging
 import os
 
-TOKEN = "487702351:AAF9ZT5I_YCcw7xnju2QLVuW694VZ9f5F70"
+TOKEN = "487702351:AAF74A8Kc1KwrxU1QGaLv30rbFcWo3XP6Lo"
 PORT = int(os.environ.get('PORT', '8443'))
 
 updater = Updater(TOKEN)
