@@ -28,7 +28,7 @@ def help_bot(bot, update):
 
 def subway(bot, update):
     print(date.today())
-    print(date.today() + timedelta(hours=5))
+    print(date.today() + timedelta(hours=10))
     number_of_day = date.weekday(date.today() + timedelta(hours=3))
     print(number_of_day)
     subs = [sub[:-1:] for sub in open('WeekOfSubs.txt', 'r', encoding='utf-8')][number_of_day]
