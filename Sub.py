@@ -27,7 +27,8 @@ def help_bot(bot, update):
 def subway(bot, update):
     subs = [sub[:-1:] for sub in open('WeekOfSubs.txt', 'r', encoding='utf-8')]
     bot.send_message(chat_id=update.message.chat_id,
-                     text='And the sub of the day for today is:\n' + subs[date.weekday(date.today() + timedelta(hours=3))])
+                     text='And the sub of the day for today is:\n' + subs[date.weekday(date.today() + timedelta(hours=3))],
+                     parse_mode=Markdown)
 
 
 def time(bot, update):
