@@ -1,7 +1,7 @@
-Spicy Italian
-Tuna
-Italian BMT
-Ham
-Turkey
-Seafood
-Turkey and Ham
+[Spicy Italian](http://subway.ru/menu/sendvichi/ostryy-italyanskiy/)
+[Tuna](http://subway.ru/menu/sendvichi/tunets/)
+[Italian BMT](http://subway.ru/menu/sendvichi/italyanskiy-bmt/)
+[Ham](http://subway.ru/menu/sendvichi/vetchina/)
+[Turkey](http://subway.ru/menu/sendvichi/indeyka/)
+[Seafood](http://subway.ru/menu/sendvichi/moreprodukty/)
+[Turkey and Ham](http://subway.ru/menu/sendvichi/indeyka-i-vetchina/)
