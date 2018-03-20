@@ -27,10 +27,8 @@ def help_bot(bot, update):
 
 
 def subway(bot, update):
-    number_of_day = date.weekday( date.today() + timedelta(days=1) * (( datetime.today() + timedelta(hours=3) ).day > datetime.today().day) )
-    print(number_of_day)
+    number_of_day = date.weekday(date.today() + timedelta(days=(datetime.today() + timedelta(hours=3)).day > datetime.today().day))
     subs = [sub[:-1:] for sub in open('WeekOfSubs.txt', 'r', encoding='utf-8')][number_of_day]
-    print(subs)
     
     bot.send_message(chat_id=update.message.chat_id,
                      text='And the sub of the day for today is:\n' + subs,
