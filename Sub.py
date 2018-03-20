@@ -59,11 +59,11 @@ dispatcher.add_handler(subway_handler)
 time_handler = CommandHandler('time', time)
 dispatcher.add_handler(time_handler)
 
-text_handler = MessageHandler(Filters.text, text)
-dispatcher.add_handler(text_handler)
-
 unknown_handler = MessageHandler(Filters.command, unknown)
 dispatcher.add_handler(unknown_handler)
+
+text_handler = MessageHandler(Filters.text, text)
+dispatcher.add_handler(text_handler)
 
 
 updater.start_webhook(listen="0.0.0.0",
