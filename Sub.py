@@ -1,3 +1,5 @@
+-*- coding: utf-8 -*-
+
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 from datetime import date, datetime, timedelta
 import logging
@@ -25,11 +27,15 @@ def help_bot(bot, update):
 
 
 def subway(bot, update):
-    subs = [sub[:-1:] for sub in open('WeekOfSubs.txt', 'r', encoding='utf-8')]
-    bot.send_message(chat_id=update.message.chat_id,
-                     text='And the sub of the day for today is:\n' + subs[date.weekday(date.today() + timedelta(hours=3))],
-                     parse_mode=Markdown)
+    number_of_day = date.weekday(date.today() + timedelta(hours=3))
+    subs = [sub[:-1:] for sub in open('WeekOfSubs.txt', 'r', encoding='utf-8')][number_of_day]
 
+    bot.send_message(chat_id=update.message.chat_id,
+                     text='And the sub of the day for today is:\n' + subs,
+                     parse_mode='Markdown',
+                     disable_web_page_preview=True)
+    bot.send_photo(chat_id=update.message.chat_id,
+                   photo=open(fr'Images/{number_of_day}.png', 'rb'))
 
 def time(bot, update):
     bot.send_message(chat_id=update.message.chat_id,
@@ -60,11 +66,11 @@ dispatcher.add_handler(subway_handler)
 time_handler = CommandHandler('time', time)
 dispatcher.add_handler(time_handler)
 
-unknown_handler = MessageHandler(Filters.command, unknown)
-dispatcher.add_handler(unknown_handler)
-
 text_handler = MessageHandler(Filters.text, text)
 dispatcher.add_handler(text_handler)
+
+unknown_handler = MessageHandler(Filters.command, unknown)
+dispatcher.add_handler(unknown_handler)
 
 
 updater.start_webhook(listen="0.0.0.0",
