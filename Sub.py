@@ -60,7 +60,8 @@ def unknown(bot, update):
 
 def text(bot, update):
     bot.send_message(chat_id=update.message.chat_id,
-                     text='Oops! I`m not programmed to **touch** your text, sorry about it!')
+                     text='Oops! I`m not programmed to **touch** your text, sorry about it!',
+                     parse_mode='Markdown')
     botan.track(YANDEX_TOKEN, update.message.chat.id, update.message, 'just text')
 
 
