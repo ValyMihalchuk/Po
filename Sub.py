@@ -18,8 +18,8 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
 
 def start(bot, update):
     greeting = '@' + update.message.chat.username if update.message.chat.type in {'private'} else 'pussies'
-    bot.send_message(chat_id=update.message.chat_id, text='Hi, {}!\nI`m here to help you to know '
-                     'the sub of the day, cause I can print it (/sub)'.format(greeting))
+    bot.send_message(chat_id=update.message.chat_id, text="Hi, {}!\nI'm here to help you to know "
+                     "the sub of the day, cause I can print it (/sub)".format(greeting))
     botan.track(YANDEX_TOKEN, update.message.chat.id, update.message, 'start')
 
 
@@ -53,14 +53,14 @@ def time(bot, update):
 def unknown(bot, update):
     greeting = '@' + update.message.chat.username if update.message.chat.type in {'private'} else 'Babes'
     bot.send_message(chat_id=update.message.chat_id,
-                     text='{}, it`s cool, you`re writing me, but I '
-                     'can`t do the thing you want me to do :C\nUse /help for more details'.format(greeting))
+                     text="{}, it's cool, you're writing me, but I "
+                     "can't do the thing you want me to do :C\nUse /help for more details".format(greeting))
     botan.track(YANDEX_TOKEN, update.message.chat.id, update.message, 'wrong command')
 
 
 def text(bot, update):
     bot.send_message(chat_id=update.message.chat_id,
-                     text='Oops! I`m not programmed to **touch** your text, sorry about it!',
+                     text="Oops! I'm not programmed to *touch* your text, sorry about it!",
                      parse_mode='Markdown')
     botan.track(YANDEX_TOKEN, update.message.chat.id, update.message, 'just text')
 
