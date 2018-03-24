@@ -2,3 +2,4 @@
 /start - greetings
 /sub - print a sub of the day
 /time - print the time
+/language - switch languages (Russian \ English)
