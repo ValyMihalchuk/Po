@@ -1,1 +1,1 @@
-web: python SubBot.py
+web: python Sub.py
