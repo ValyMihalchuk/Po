@@ -22,23 +22,6 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
                     level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-lingua_franca = 'en'
-
-translate = {
-    'ru': {
-        'button': ['Выбранный {}: {}'],
-        'language': [['Русский', 'Английский'],
-                     ['язык Русский', 'язык Английский'],
-                     ['Выберите язык: ']],
-    },
-    'en': {
-        'button': ['Selected {}: {}'],
-        'language': [['Russian', 'English'],
-                     ['language Russian', 'language English'],
-                     ['Choose the language: ']]
-    }
-}
-
 
 def build_menu(buttons, n_cols, header_buttons=None, footer_buttons=None):
     menu = [buttons[i:i + n_cols] for i in range(0, len(buttons), n_cols)]
@@ -172,8 +155,8 @@ updater.dispatcher.add_error_handler(error)
 
 updater.start_polling()
 
-# updater.start_webhook(listen="0.0.0.0",
-#                      port=PORT,
-#                      url_path=TOKEN)
-# updater.bot.set_webhook("https://warm-tor-12956.herokuapp.com/" + TOKEN)
-# updater.idle()
+updater.start_webhook(listen="0.0.0.0",
+                      port=PORT,
+                      url_path=TOKEN)
+updater.bot.set_webhook("https://warm-tor-12956.herokuapp.com/" + TOKEN)
+updater.idle()
