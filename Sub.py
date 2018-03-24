@@ -1,6 +1,11 @@
+# Strukov Alexandr
+
+
 # -*- coding: utf-8 -*-
 
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
+
+from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackQueryHandler
+from telegram import InlineKeyboardMarkup, InlineKeyboardButton
 from datetime import date, datetime, timedelta
 import logging
 import os
@@ -13,27 +18,92 @@ PORT = int(os.environ.get('PORT', '8443'))
 
 updater = Updater(TOKEN)
 dispatcher = updater.dispatcher
-logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
+logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+                    level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+lingua_franca = 'en'
+
+translate = {
+    'ru': {
+        'button': ['Выбранный {}: {}'],
+        'language': [['Русский', 'Английский'],
+                     ['язык Русский', 'язык Английский'],
+                     ['Выберите язык: ']],
+    },
+    'en': {
+        'button': ['Selected {}: {}'],
+        'language': [['Russian', 'English'],
+                     ['language Russian', 'language English'],
+                     ['Choose the language: ']]
+    }
+}
+
+
+def build_menu(buttons, n_cols, header_buttons=None, footer_buttons=None):
+    menu = [buttons[i:i + n_cols] for i in range(0, len(buttons), n_cols)]
+
+    if header_buttons:
+        menu.insert(0, header_buttons)
+    if footer_buttons:
+        menu.append(footer_buttons)
+
+    return menu
+
+
+def button(bot, update):
+    query = update.callback_query
+    option, choice = query.data.split()
+
+    apology = "Sorry, it was a joke, due to the fact, that I can't fix some bugs in translating );"
+
+    bot.edit_message_text(text=apology if option == 'language' else "Chosen {}: {}".format(option, choice),
+                          chat_id=query.message.chat_id,
+                          message_id=query.message.message_id)
+
+
+def language(bot, update):
+    button_list = [
+        InlineKeyboardButton('Russian', callback_data='language Russian'),
+        InlineKeyboardButton('English', callback_data='language English')
+    ]
+    reply_markup = InlineKeyboardMarkup(build_menu(button_list, n_cols=2))
+
+    bot.send_message(chat_id=update.message.chat_id,
+                     text='Choose the language: ',
+                     reply_markup=reply_markup)
+
+    botan.track(YANDEX_TOKEN, update.message.chat.id, update.message, 'language')
 
 
 def start(bot, update):
     greeting = '@' + update.message.chat.username if update.message.chat.type in {'private'} else 'pussies'
-    bot.send_message(chat_id=update.message.chat_id, text="Hi, {}!\nI'm here to help you to know "
-                     "the sub of the day, cause I can print it (/sub)".format(greeting))
+
+    bot.send_message(chat_id=update.message.chat_id,
+                     text="Hi, {}!\nI'm here to help you to know "
+                          "the sub of the day, cause I can print it (/sub)".format(greeting))
+    bot.send_message(chat_id=update.message.chat_id,
+                     text="If it's uncomfortable for you to read in English, "
+                          "you can switch the language to Russian")
+
+    language(bot, update)
+
     botan.track(YANDEX_TOKEN, update.message.chat.id, update.message, 'start')
 
 
 def help_bot(bot, update):
+    comands = [line for line in open('CommandForBot.txt', 'r', encoding='utf-8')]
     bot.send_message(chat_id=update.message.chat_id,
                      text='Oh, I see, you need some help in using me.\n'
-                          'Brilliant! Here are the things I can:\n{}'.
-                     format(''.join([line for line in open('CommandForBot.txt', 'r', encoding='utf-8')])))
+                          'Brilliant! Here are the things I can:\n{}'.format(''.join(comands)))
+
     botan.track(YANDEX_TOKEN, update.message.chat.id, update.message, 'help')
 
 
 def subway(bot, update):
-    number_of_day = date.weekday(date.today() + timedelta(days=(datetime.today() + timedelta(hours=3)).day > datetime.today().day))
-    subs = [sub[:-1:] for sub in open('WeekOfSubs.txt', 'r', encoding='utf-8')][number_of_day]
+    number_of_day = date.weekday(date.today() +
+                    timedelta(days=(datetime.today() + timedelta(hours=3)).day > datetime.today().day))
+    subs = [sub[:-1:] for sub in open('WeekOfSubsEn.txt', 'r', encoding='utf-8')][number_of_day]
 
     bot.send_message(chat_id=update.message.chat_id,
                      text='And the sub of the day for today is:\n' + subs,
@@ -44,17 +114,21 @@ def subway(bot, update):
 
     botan.track(YANDEX_TOKEN, update.message.chat.id, update.message, 'sub')
 
+
 def time(bot, update):
     bot.send_message(chat_id=update.message.chat_id,
                      text=(datetime.today() + timedelta(hours=3)).strftime('%H:%M\n%d %h %Y'))
+
     botan.track(YANDEX_TOKEN, update.message.chat.id, update.message, 'time')
 
 
 def unknown(bot, update):
     greeting = '@' + update.message.chat.username if update.message.chat.type in {'private'} else 'Babes'
+
     bot.send_message(chat_id=update.message.chat_id,
-                     text="{}, it's cool, you're writing me, but I "
-                     "can't do the thing you want me to do :C\nUse /help for more details".format(greeting))
+                     text="{}, it's cool, you're writing me, but I can't do the thing"
+                          " you want me to do :C\nUse /help for more details".format(greeting))
+
     botan.track(YANDEX_TOKEN, update.message.chat.id, update.message, 'wrong command')
 
 
@@ -62,8 +136,19 @@ def text(bot, update):
     bot.send_message(chat_id=update.message.chat_id,
                      text="Oops! I'm not programmed to *touch* your text, sorry about it!",
                      parse_mode='Markdown')
+
     botan.track(YANDEX_TOKEN, update.message.chat.id, update.message, 'just text')
 
+
+def error(bot, update, error):
+    logger.warning('Update "%s" caused error "%s"', update, error)
+
+
+language_handler = CommandHandler('language', language)
+dispatcher.add_handler(language_handler)
+
+button_handler = CallbackQueryHandler(button)
+dispatcher.add_handler(button_handler)
 
 start_handler = CommandHandler('start', start)
 dispatcher.add_handler(start_handler)
@@ -83,9 +168,12 @@ dispatcher.add_handler(text_handler)
 unknown_handler = MessageHandler(Filters.command, unknown)
 dispatcher.add_handler(unknown_handler)
 
+updater.dispatcher.add_error_handler(error)
 
-updater.start_webhook(listen="0.0.0.0",
-                      port=PORT,
-                      url_path=TOKEN)
-updater.bot.set_webhook("https://warm-tor-12956.herokuapp.com/" + TOKEN)
-updater.idle()
+updater.start_polling()
+
+# updater.start_webhook(listen="0.0.0.0",
+#                      port=PORT,
+#                      url_path=TOKEN)
+# updater.bot.set_webhook("https://warm-tor-12956.herokuapp.com/" + TOKEN)
+# updater.idle()
